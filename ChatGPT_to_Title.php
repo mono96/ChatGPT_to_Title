@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: ChatGPT to Title
-Plugin URI: https://mono96.jp
+Plugin URI: https://github.com/mono96/ChatGPT_to_Title
 Description: Use chat-gpt to learn about suggestions for improving article titles.
 Version: 1.0
 Author: Nobuhito Ohigashi
