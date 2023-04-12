@@ -1,6 +1,9 @@
 # ChatGPT_to_Title
 Plugin to add the ability to ask Chat-GPT for suggestions for title improvements from the WordPress
 
+last Ver 1.0.2
+- Changed to delete API Key and other configuration values when the plugin is deactivated.
+
 # Manuel （Movie）
 
 https://vimeo.com/816776023/e88b8ba20b
