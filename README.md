@@ -3,6 +3,8 @@ Plugin to add the ability to ask Chat-GPT for suggestions for title improvements
 
 last Ver 1.1.0
 - English 
+
+Ver 1.0.2
 - Changed to delete API Key and other configuration values when the plugin is deactivated.
 
 # Manuel （Movie）
