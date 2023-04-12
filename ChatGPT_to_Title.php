@@ -3,50 +3,52 @@
 Plugin Name: ChatGPT to Title
 Plugin URI: https://github.com/mono96/ChatGPT_to_Title
 Description: Use chat-gpt to learn about suggestions for improving article titles.
-Version: 1.0
+Version: 1.0.2
 Author: Nobuhito Ohigashi
 Author URI: https://mono96.jp
 License: GPL2
 */
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 // Update the API key and model in the database
-function update_chatgpt_title_settings($input) {
-    if (isset($input['chatgpt_title_api_key_mono96'])) {
-        update_option('chatgpt_title_api_key_mono96', $input['chatgpt_title_api_key_mono96']);
+function CGTT_update_chatgpt_title_settings($input) {
+    if (isset($input['CGTT_chatgpt_title_api_key'])) {
+        update_option('CGTT_chatgpt_title_api_key', $input['CGTT_chatgpt_title_api_key']);
     }
-    if (isset($input['chatgpt_title_model_mono96'])) {
-        update_option('chatgpt_title_model_mono96', $input['chatgpt_title_model_mono96']);
+    if (isset($input['CGTT_chatgpt_title_model'])) {
+        update_option('CGTT_chatgpt_title_model', $input['CGTT_chatgpt_title_model']);
     }
 }
 add_action('admin_init', function() {
-    register_setting('chatgpt_title_settings', 'chatgpt_title_api_key_mono96');
-    register_setting('chatgpt_title_settings', 'chatgpt_title_model_mono96');
+    register_setting('CGTT_chatgpt_title_settings', 'CGTT_chatgpt_title_api_key');
+    register_setting('CGTT_chatgpt_title_settings', 'CGTT_chatgpt_title_model');
 });
 
 // Create a menu in the administration settings
-function chatgpt_title_plugin_menu() {
-    add_options_page('ChatGPT to Title Settings', 'ChatGPT to Title', 'manage_options', 'chatgpt-title-settings', 'chatgpt_title_plugin_settings_page');
+function CGTT_chatgpt_title_plugin_menu() {
+    add_options_page('ChatGPT to Title Settings', 'ChatGPT to Title', 'manage_options', 'chatgpt-title-settings', 'CGTT_chatgpt_title_plugin_settings_page');
 }
-add_action('admin_menu', 'chatgpt_title_plugin_menu');
+add_action('admin_menu', 'CGTT_chatgpt_title_plugin_menu');
 
 // Settings page callback function
-function chatgpt_title_plugin_settings_page() {
+function CGTT_chatgpt_title_plugin_settings_page() {
     ?>
     <div class="wrap">
         <h1>ChatGPT to Title Settings</h1>
         <form method="post" action="options.php">
-            <?php settings_fields('chatgpt_title_settings'); ?>
-            <?php do_settings_sections('chatgpt_title_settings'); ?>
+            <?php settings_fields('CGTT_chatgpt_title_settings'); ?>
+            <?php do_settings_sections('CGTT_chatgpt_title_settings'); ?>
             <table class="form-table">
                 <tr>
                     <th scope="row">API Key</th>
-                    <td><input type="text" name="chatgpt_title_api_key_mono96" value="<?php echo esc_attr(get_option('chatgpt_title_api_key_mono96')); ?>" /></td>
+                    <td><input type="text" name="CGTT_chatgpt_title_api_key" value="<?php echo esc_attr(get_option('CGTT_chatgpt_title_api_key')); ?>" /></td>
                 </tr>
                 <tr>
                     <th scope="row">Model</th>
                     <td>
-                        <label><input type="radio" name="chatgpt_title_model_mono96" value="gpt-3.5-turbo" <?php checked(get_option('chatgpt_title_model_mono96'), 'gpt-3.5-turbo'); ?>>gpt-3.5-turbo</label><br>
-                        <label><input type="radio" name="chatgpt_title_model_mono96" value="gpt-4" <?php checked(get_option('chatgpt_title_model_mono96'), 'gpt-4'); ?>>gpt-4</label>
+                        <label><input type="radio" name="CGTT_chatgpt_title_model" value="gpt-3.5-turbo" <?php checked(get_option('CGTT_chatgpt_title_model'), 'gpt-3.5-turbo'); ?>>gpt-3.5-turbo</label><br>
+                        <label><input type="radio" name="CGTT_chatgpt_title_model" value="gpt-4" <?php checked(get_option('CGTT_chatgpt_title_model'), 'gpt-4'); ?>>gpt-4</label>
                     </td>
                 </tr>
             </table>
@@ -57,25 +59,31 @@ function chatgpt_title_plugin_settings_page() {
     <?php
 }
 
+// Delete API key when plugin is deactivated
+function CGTT_chatgpt_title_plugin_deactivation_hook() {
+    delete_option('CGTT_chatgpt_title_api_key');
+    delete_option('CGTT_chatgpt_title_model');
+}
+register_deactivation_hook(__FILE__, 'CGTT_chatgpt_title_plugin_deactivation_hook');
 
 // Add meta box to block editor sidebar
-function my_block_editor_plugin_add_custom_meta_box() {
+function CGTT_block_editor_plugin_add_custom_meta_box() {
     add_meta_box(
-        'my_block_editor_plugin_meta_box',
+        'CGTT_block_editor_plugin_meta_box',
         'ChatGPT to Title',
-        'my_block_editor_plugin_meta_box_callback',
+        'CGTT_block_editor_plugin_meta_box_callback',
         'post',
         'normal',
         'high'
     );
 }
-add_action('add_meta_boxes', 'my_block_editor_plugin_add_custom_meta_box');
+add_action('add_meta_boxes', 'CGTT_block_editor_plugin_add_custom_meta_box');
 
 // Meta box callback function
-function my_block_editor_plugin_meta_box_callback($post) {
+function CGTT_block_editor_plugin_meta_box_callback($post) {
     echo '<div class="my-block-editor-plugin-sidebar-panel">';
     echo '<div style="display:flex;align-items: baseline;"><h3>ChatGPT to Title</h3>';
-    echo '<p style="padding-left:20px;" class="chatgpt_model_type">model : ' . get_option('chatgpt_title_model_mono96') .'</p></div>';
+    echo '<p style="padding-left:20px;" class="chatgpt_model_type">model : ' . get_option('CGTT_chatgpt_title_model') .'</p></div>';
     echo '<button type="button" class="my-block-editor-plugin-button button">タイトルを考える</button>';
     echo '<p class="my-block-editor-plugin-article-title" style="display:none;"></p>';
     echo '</div>';
@@ -94,12 +102,13 @@ function my_block_editor_plugin_meta_box_callback($post) {
 function my_block_editor_plugin_get_article_title() {
     $post_id = $_POST['post_id'];
     $post = get_post($post_id);
-    $article_title = $post->post_title;
+    $article_title = esc_html($post->post_title);
     // Output the JavaScript code to disable the button
     if ($article_title) {
-    $article_idea=chatgpt_wp_title_idea($article_title);
+        $article_idea=esc_html(chatgpt_wp_title_idea($article_title));
+        
     } else {
-    $article_idea="タイトルが空白です。";
+        $article_idea="タイトルが空白です。";
     }
 
     
@@ -111,9 +120,9 @@ function chatgpt_wp_title_idea($title) {
 
 $result = array();
 // APIキー
-$apiKey = get_option('chatgpt_title_api_key_mono96');
+$apiKey = get_option('CGTT_chatgpt_title_api_key');
 // model
-$chatgpt_model = get_option('chatgpt_title_model_mono96');
+$chatgpt_model = get_option('CGTT_chatgpt_title_model');
 
 //openAI APIエンドポイント
 $endpoint = 'https://api.openai.com/v1/chat/completions';
