@@ -10,7 +10,7 @@ https://vimeo.com/816776023/e88b8ba20b
 
 # Supported Language
 
-Japanese only
+English and Japanese.
 
 # API key
 
